@@ -41,3 +41,5 @@ ggplot(birthday_results,
 The estimated probability of at least two people sharing a birthday increases with group size. 
 
 It first reaches 50% at `r min(birthday_results$number_of_people[birthday_results$prob_of_repeat >= 0.5])` people. For a group of 50, the estimated probability is `r scales::percent(birthday_results$prob_of_repeat[birthday_results$number_of_people == 50], accuracy = 0.1)`.
+
+## Problem 2
