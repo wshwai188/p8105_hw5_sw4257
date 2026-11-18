@@ -1,0 +1,43 @@
+---
+title: "P8105_HW5_sw4257"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+```
+
+
+## Problem 1
+```{r birthday, fig.width=8, fig.height=5, dpi=300, out.width="100%"}
+birthday_repeated = function(n_room) {
+  birthdays = sample(1:365, size = n_room, replace = TRUE)
+  repeated_birthdays = length(unique(birthdays)) < n_room
+  return(repeated_birthdays)
+}
+
+set.seed(4257)
+
+birthday_results_df = expand_grid(number_of_people = 2:50,
+                                  iter = 1:10000) |>
+  mutate(repeated = map_lgl(number_of_people, birthday_repeated))
+
+birthday_results = birthday_results_df |>
+  group_by(number_of_people) |>
+  summarize(prob_of_repeat = mean(repeated), .groups = "drop")
+
+ggplot(birthday_results,
+       aes(x = number_of_people, y = prob_of_repeat)) +
+  geom_line(color = "#4E79A7", linewidth = 0.5) +
+  geom_point(color = "#4E79A7", size = 1) +
+  scale_y_continuous(labels = scales::label_percent()) +
+  labs(title = "Probability of a Shared Birthday by Group Size",
+       x = "Number of people",
+       y = "Estimated probability") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+The estimated probability of at least two people sharing a birthday increases with group size. 
+
+It first reaches 50% at `r min(birthday_results$number_of_people[birthday_results$prob_of_repeat >= 0.5])` people. For a group of 50, the estimated probability is `r scales::percent(birthday_results$prob_of_repeat[birthday_results$number_of_people == 50], accuracy = 0.1)`.
